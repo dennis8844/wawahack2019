@@ -67,7 +67,8 @@ class App extends Component {
             viewLoading: true,
             imageLoading: false,
             showModal: false,
-            modalType: ''
+            modalType: '',
+            hasItems: true
         };
     }
 
@@ -107,9 +108,16 @@ class App extends Component {
         }
     };
 
-  renderModal = (type, close, authed) => {
-      return (<ModalBase modalType={type} authed={authed} close={close} />);
+  renderModal = (type, close, authed, hasItems, setHasItems) => {
+      return (<ModalBase modalType={type} authed={authed} close={close} hasItems={this.state.hasItems}
+                         toggleItems={this.setHasItems} />);
 
+  }
+
+  setHasItems = (e, value) => {
+      if (e) {
+          this.setState({hasItems: value});
+      }
   }
 
   render() {
@@ -198,8 +206,10 @@ class App extends Component {
                                     authed={this.state.authed}
                                     path="/mobileview"
                                     width={this.props.width}
-                                    component={(props) => <Dashboard openModal={this.handleOpen}
-                                                                     closeModal={this.handleClose} />
+                                    component={(props) => <Dashboard hasItems={this.state.hasItems}
+                                        toggleItems={this.setHasItems}
+                                         openModal={this.handleOpen}
+                                         closeModal={this.handleClose} />
                                     }
                                 />
                                 <Route render={() => <h3>No Match</h3>}/>
@@ -230,8 +240,10 @@ class App extends Component {
                 style={{display: 'flex'}}
                 onBackdropClick={(e) => {this.handleClose(e)}}
                 onEscapeKeyDown={(e) => {this.handleClose(e)}}
+                hasItems={this.state.hasItems}
+                toggleItems={this.setHasItems}
             >
-                {this.renderModal(this.state.modalType, this.handleClose, this.state.authed)}
+                {this.renderModal(this.state.modalType, this.handleClose, this.setHasItems, this.state.authed)}
 
             </Modal>
 

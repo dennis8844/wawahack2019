@@ -5,3 +5,7 @@ body {
     background-color: #c5d6e3;
     overflow: hidden;
 }
+
+.MuiButton-label {
+    flex-direction: inherit
+}

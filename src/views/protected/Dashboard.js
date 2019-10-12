@@ -10,6 +10,7 @@ import Table from '@material-ui/core/Table';
 import TableCell from '@material-ui/core/TableCell';
 // import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import IconButton from '@material-ui/core/IconButton';
 
 
 import AddIcon from '@material-ui/icons/Add';
@@ -17,6 +18,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import UpIcon from '@material-ui/icons/ArrowUpward';
 import DownIcon from '@material-ui/icons/ArrowDownward';
+import EditIcon from '@material-ui/icons/Edit';
 import rawProfile from "../../utils/profile.json";
 import rawSandwitch from "../../utils/sandwichJson.json";
 
@@ -35,8 +37,11 @@ const useStyles = makeStyles(theme => ({
     table: {}
 }));
 
+
+
 export default function Dashboard(props){
-    const { openModal } = props;
+    const btnRef = React.useRef(null)
+    const { openModal, closeModal, setHasItems, hasItems, toggleItems } = props;
     const classes = useStyles();
     const testing = true;
     let notYetLoaded = true;
@@ -45,6 +50,7 @@ export default function Dashboard(props){
     const [basketItems, setBasketItems] = useState([]);
     const [favItems, setFavItems] = useState([]);
     const rowItems = [];
+    const [showItem, setShowItem] = useState(false)
     let itemCount = 0;
     basketItems.forEach(item => {
         const itemId = basketItems.indexOf(item);
@@ -84,6 +90,10 @@ export default function Dashboard(props){
 
     },[notYetLoaded]);
 
+    function updateHasItems () {
+        setHasItems(!hasItems);
+    }
+
     function setItems (profileData) {
         let favorites = [];
         if (profileData && 'favouritesGroups' in profileData) {
@@ -106,6 +116,12 @@ export default function Dashboard(props){
             }
         } else {
             return [];
+        }
+    }
+
+    function addItem1 (e, val) {
+        if (e) {
+            setShowItem(val);
         }
     }
 
@@ -159,6 +175,16 @@ export default function Dashboard(props){
         setBasketItems(newBasket);
     }
 
+    const editStyle = {
+        marginLeft: '-15px',
+        backgroundColor: '#b48b69'
+    };
+    const editStyle2 = {
+        height: 0,
+        marginLeft: '-15px',
+        backgroundColor: '#b48b69'
+    }
+
     return (
       <GridContainer justify="center" direction="row">
         <GridItem md={7} lg={8}>
@@ -195,9 +221,17 @@ export default function Dashboard(props){
                           <GridContainer justify="center" direction="column" style={{padding: 5}}>
                               <GridItem style={{paddingBottom: '0 0 64px 0'}}>
                                   {rowItems.length > 0 && <Table className={classes.table} size="small">
-                                      {rowItems.map(item => {
+                                      {showItem && rowItems.map(item => {
                                           return (
                                               <TableRow key={item.id.toString() + '-' + item.name} >
+                                                  <Fab
+                                                      variant="extended"
+                                                      size="small"
+                                                      color="primary"
+                                                      aria-label="add"
+                                                      style={item.topLevel ? editStyle : editStyle2}
+                                                      className={classes.margin}
+                                                  ><EditIcon /></Fab>
                                                   <TableCell  style={item.topLevel ? {border: 0} : {border: 0, padding: 0, paddingLeft: 50, fontStyle: 'italic'}}>
                                                       {item.name}
                                                   </TableCell>
@@ -225,7 +259,7 @@ export default function Dashboard(props){
                   <GridItem>
                       <GridContainer justify="space-evenly" direction="row" style={{padding: 5}}>
                           <GridContainer justify="center" direction="column" style={{padding: 0}}>
-                              <Fab color="primary" aria-label="add" className={classes.fab} style={{backgroundColor: '#312B2B'}}>
+                              <Fab color="primary" aria-label="add" ref={btnRef} id="backbutton" onClick={(e) => {setShowItem(e, true)}} className={classes.fab} style={{backgroundColor: '#312B2B'}}>
                                   <BackIcon />
                               </Fab>
                               <span style={{alignSelf: 'center'}}>
@@ -234,7 +268,7 @@ export default function Dashboard(props){
                           </GridContainer>
                           <div syle={{width: 10}}></div>
                           <GridContainer justify="center" direction="column" style={{padding: 0}}>
-                              <Fab color="primary" aria-label="add" className={classes.fab}  style={{backgroundColor: '#312B2B'}}>
+                              <Fab color="primary" onClick={(e) => {setShowItem(e, false)}} aria-label="add" className={classes.fab}  style={{backgroundColor: '#312B2B'}}>
                                   <ClearIcon />
                               </Fab>
                               <span style={{alignSelf: 'center'}}>
