@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, HashRouter, Link, Redirect, Switch } from 'react-router-dom';
 
+
 //import { createBrowserHistory } from "history";
 import Login from './Login';
 import Register from './Register';
@@ -20,7 +21,7 @@ import { SnackbarProvider } from 'material-ui-snackbar-provider'
 
 //var hist = createBrowserHistory();
 
-function PrivateRoute({ component: Component, authed, openModal, closeModal, ...rest }) {
+function PrivateRoute({ component: Component, authed, width, openModal, closeModal, ...rest }) {
     return (
     <Route
       {...rest}
@@ -37,13 +38,19 @@ function PrivateRoute({ component: Component, authed, openModal, closeModal, ...
   );
 }
 
-function PublicRoute({ component: Component, authed, openModal, closeModal, ...rest }) {
+function PublicRoute({ component: Component, authed, openModal, width, closeModal, ...rest }) {
+    const widthText = 'xs--sm';
+    console.log(width);
+    const isMobile = widthText.indexOf(width) > -1;
+    console.log(isMobile);
   return (
     <Route
       {...rest}
       render={props =>
         authed === false ? (
           <Component {...props}  />
+        ) : isMobile ?  (
+            <Redirect to="/mobile"  />
         ) : (
           <Redirect to="/dashboard" />
         )}
@@ -106,6 +113,7 @@ class App extends Component {
   }
 
   render() {
+      console.log(this.props);
     const authButtons = this.state.authed ? (
       <FlatButton
         label="Logout"
@@ -168,6 +176,7 @@ class App extends Component {
                                     component={Login}
                                     openModal={this.handleOpen}
                                     closeModal={this.handleClose}
+                                    width={this.props.width}
                                 />
                                 <PublicRoute
                                     authed={this.state.authed}
@@ -175,12 +184,22 @@ class App extends Component {
                                     component={Register}
                                     openModal={this.handleOpen}
                                     closeModal={this.handleClose}
+                                    width={this.props.width}
                                 />
                                 <PrivateRoute
                                     authed={this.state.authed}
                                     path="/dashboard"
+                                    width={this.props.width}
                                     component={(props) => <Dashboard openModal={this.handleOpen}
                                         closeModal={this.handleClose} />
+                                    }
+                                />
+                                <PrivateRoute
+                                    authed={this.state.authed}
+                                    path="/mobileview"
+                                    width={this.props.width}
+                                    component={(props) => <Dashboard openModal={this.handleOpen}
+                                                                     closeModal={this.handleClose} />
                                     }
                                 />
                                 <Route render={() => <h3>No Match</h3>}/>
