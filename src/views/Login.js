@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { login, resetPassword } from '../helpers/auth';
+import { withStyles } from "@material-ui/core/styles";
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -9,6 +10,17 @@ function setErrorMsg(error) {
     loginMessage: error
   };
 }
+
+const CssTextField = withStyles({
+    root: {
+        '& label.Mui-focused': {
+            color: '#a93337',
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: '#a93337',
+        },
+    }
+})(TextField);
 
 export default class Login extends Component {
   constructor(props) {
@@ -36,19 +48,21 @@ export default class Login extends Component {
       .catch(error => this.setState(setErrorMsg(`Email address not found.`)));
   };
   render() {
+
+
     return (
       <form
         style={style.container}
         onSubmit={event => this.handleSubmit(event)}
       >
         <h3>Login</h3>
-        <TextField
+        <CssTextField
           hintText="Enter your Email"
           floatingLabelText="Email"
           onChange={(event, newValue) => this.setState({ email: newValue })}
         />
         <br />
-        <TextField
+        <CssTextField
           type="password"
           hintText="Enter your Password"
           floatingLabelText="Password"
@@ -63,15 +77,14 @@ export default class Login extends Component {
             />
             <span className="sr-only">Error:</span>
             &nbsp;{this.state.loginMessage}{' '}
-            <a href="#" onClick={this.resetPassword} className="alert-link">
+            <a href="/" onClick={this.resetPassword} className="alert-link">
               Forgot Password?
             </a>
           </div>
         )}
         <RaisedButton
           label="Login"
-          primary={true}
-          style={style.raisedBtn}
+          style={{backgroundColor: "#a93337"}}
           type="submit"
         />
       </form>
@@ -80,7 +93,8 @@ export default class Login extends Component {
 }
 
 const raisedBtn = {
-  margin: 15
+  margin: 15,
+  backgroundColor: '#a93337'
 };
 
 const container = {
