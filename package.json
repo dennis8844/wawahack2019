@@ -1,5 +1,5 @@
 {
-  "name": "test-app",
+  "name": "wawa-hack-app",
   "version": "1.0.0",
   "private": true,
   "description": "firebase test",
@@ -9,6 +9,9 @@
     "@material-ui/core": "^4.5.0",
     "@material-ui/icons": "^4.4.3",
     "@material-ui/styles": "^4.5.0",
+    "ajv": "^6.10.2",
+    "create-react-app": "^3.2.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
     "firebase": "^4.6.0",
     "material-ui": "^0.19.4",
     "material-ui-snackbar-provider": "^1.3.0",
@@ -18,7 +21,8 @@
     "react-image-uploader": "^1.0.0",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17"
+    "react-scripts": "^3.2.0",
+    "typescript": "^3.6.4"
   },
   "devDependencies": {},
   "scripts": {
@@ -38,5 +42,17 @@
   "bugs": {
     "url": "https://github.com/dennis8844/test_firebase/issues"
   },
-  "homepage": "https://dpitcock-test.firebaseapp.com/"
+  "homepage": "https://dpitcock-test.firebaseapp.com/",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
