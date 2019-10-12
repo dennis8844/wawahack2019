@@ -14,3 +14,6 @@ npm-debug.log
 
 #firebase
 .firebase/*
+
+#jetbrains stuff
+.ideas
