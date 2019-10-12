@@ -12,6 +12,7 @@ import withWidth from '@material-ui/core/withWidth';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import Modal from '@material-ui/core/Modal';
+import ModalBase from '../components/Modals/ModalBase';
 // import { withRouter } from "react-router";
 // import { createBrowserHistory } from "history";
 // consumers & contexts
@@ -19,11 +20,12 @@ import { SnackbarProvider } from 'material-ui-snackbar-provider'
 
 //var hist = createBrowserHistory();
 
-function PrivateRoute({ component: Component, authed, ...rest }) {
-  return (
+function PrivateRoute({ component: Component, authed, openModal, closeModal, ...rest }) {
+    return (
     <Route
       {...rest}
       render={props =>
+
         authed === true ? (
           <Component {...props} />
         ) : (
@@ -35,13 +37,13 @@ function PrivateRoute({ component: Component, authed, ...rest }) {
   );
 }
 
-function PublicRoute({ component: Component, authed, ...rest }) {
+function PublicRoute({ component: Component, authed, openModal, closeModal, ...rest }) {
   return (
     <Route
       {...rest}
       render={props =>
         authed === false ? (
-          <Component {...props} />
+          <Component {...props}  />
         ) : (
           <Redirect to="/dashboard" />
         )}
@@ -98,7 +100,8 @@ class App extends Component {
         }
     };
 
-  renderModal = (type, close) => {
+  renderModal = (type, close, authed) => {
+      return (<ModalBase modalType={type} authed={authed} close={close} />);
 
   }
 
@@ -176,9 +179,9 @@ class App extends Component {
                                 <PrivateRoute
                                     authed={this.state.authed}
                                     path="/dashboard"
-                                    component={Dashboard}
-                                    openModal={this.handleOpen}
-                                    closeModal={this.handleClose}
+                                    component={(props) => <Dashboard openModal={this.handleOpen}
+                                        closeModal={this.handleClose} />
+                                    }
                                 />
                                 <Route render={() => <h3>No Match</h3>}/>
                             </Switch>
@@ -202,11 +205,14 @@ class App extends Component {
             <Modal
                 open={this.state.showModal}
                 handleClose={this.handleClose}
+                authed={this.state.authed}
                 scroll='paper'
+                id="modal-container"
+                style={{display: 'flex'}}
                 onBackdropClick={(e) => {this.handleClose(e)}}
                 onEscapeKeyDown={(e) => {this.handleClose(e)}}
             >
-                {this.renderModal(this.state.modalType, this.handleClose)}
+                {this.renderModal(this.state.modalType, this.handleClose, this.state.authed)}
 
             </Modal>
 
