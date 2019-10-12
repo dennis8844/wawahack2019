@@ -12,15 +12,35 @@ import QRreader from './QRreader.js';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Fab from "@material-ui/core/Fab/Fab";
-import ClearIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import AddIcon from '@material-ui/icons/Add';
+import ClearIcon from '@material-ui/icons/Clear';
+import BackIcon from '@material-ui/icons/ArrowBack';
+import UpIcon from '@material-ui/icons/ArrowUpward';
+import DownIcon from '@material-ui/icons/ArrowDownward';
 import rawProfile from "../../utils/profile.json";
 import rawSandwitch from "../../utils/sandwichJson.json";
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        padding: theme.spacing(3, 2),
+        paddingBottom: 0,
+        height: 'calc(100% - 20px)'
+    },
+    fab: {
+        margin: theme.spacing(1),
+    },
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    }
+}));
 
 
 function ModalBase(props) {
     console.log(props);
-    const { authed, modalType, closeModal } = props;
+    const classes = useStyles();
+    const { authed, modalType, close } = props;
     const [content, setContent] = useState('buttons');
+    const [prevContent, setPrevContent] = useState([]);
     const [list, setList] = useState('');
     const [scanned, setScanned] = useState(false);
     const profileData = JSON.parse(JSON.stringify(rawProfile));
@@ -75,6 +95,12 @@ function ModalBase(props) {
         })
     }
 
+    function updatePastModalContent(content) {
+        let newPast = [...prevContent];
+        newPast.push(content);
+        setPrevContent(newPast);
+    }
+
 
 
     function updateContent (e, content, fromQR=false, QRsource='') {
@@ -83,10 +109,43 @@ function ModalBase(props) {
         console.log(content)
         console.log(fromQR)
         if (e || fromQR === 'fromQR') {
+            updateContent(content);
             setContent(content);
             if (QRsource === 'receipt') {
                 setList(QRsource)
             }
+        }
+    }
+
+    function goBackInModal (e) {
+        if (e) {
+            //lets not waste time
+
+            setContent('buttons');
+            //
+            // let foundAt = [];
+            // let appliedIndex = 0;
+            // let copyOfPrevContent = [...prevContent];
+            // const prevContentCount = copyOfPrevContent.length;
+            // copyOfPrevContent.reduct(function(foundAt, item, index){
+            //     if (item === content) {
+            //         foundAt.push(index);
+            //     }
+            // });
+            // if (foundAt.length > 1) {
+            //     const lastViewed = Math.max(...foundAt);
+            //     appliedIndex = lastViewed - 1;
+            // } else if (foundAt.length === 1) {
+            //     appliedIndex = foundAt[0] - 1;
+            // } else {
+            //     //nothing to do
+            // }
+            // if (appliedIndex > 0) {
+            //     const lastPage = prevContent[appliedIndex];
+            //     copyOfPrevContent.length = prevContentCount - 1;
+            //     setContent(lastPage);
+            //     setPrevContent(copyOfPrevContent);
+            // }
         }
     }
 
@@ -109,6 +168,40 @@ function ModalBase(props) {
             );
         }
     }
+
+    function closeModal (e) {
+        if (e) {
+            close();
+        }
+    }
+
+    const showNavsComponent = <GridContainer justify="space-evenly" direction="row" style={{padding: 5}}>
+            <GridContainer justify="center" direction="column" style={{padding: 0}}>
+                <Fab color="primary" aria-label="add" className={classes.fab} style={{backgroundColor: '#312B2B'}}
+                     disabled={content === 'buttons'} onClick={(e) => {goBackInModal(e)}}>
+                    <BackIcon />
+                </Fab>
+                <span style={{alignSelf: 'center'}}>Previous</span>
+            </GridContainer>
+            <GridContainer justify="center" direction="column" style={{padding: 0}}>
+                <Fab aria-label="add" className={classes.fab}  size="medium" style={{backgroundColor: '#a93337', color: '#fff'}}>
+                    <UpIcon />
+                </Fab>
+            </GridContainer>
+            <GridContainer justify="center" direction="column" style={{padding: 0}}>
+                <Fab style={{backgroundColor: '#a93337', color: '#fff'}} size="medium" aria-label="add" className={classes.fab}>
+                    <DownIcon />
+                </Fab>
+            </GridContainer>
+            <GridContainer justify="center" direction="column" style={{padding: 0}}>
+                <Fab color="primary" aria-label="add" className={classes.fab}  style={{backgroundColor: '#312B2B'}} onClick={(e) => {closeModal(e)}}>
+                    <ClearIcon />
+                </Fab>
+                <span style={{alignSelf: 'center'}}>Cancel</span>
+            </GridContainer>
+        </GridContainer>;
+
+    const showNavs = content !== 'buttons';
 
 
     if (authed) {
@@ -153,6 +246,7 @@ function ModalBase(props) {
                     </div>}
                     {list === 'prev' ? createItemList(prevItems, 'previously ordered') : createItemList(favItems, 'favourite') }
                 </div>}
+                {showNavs && showNavsComponent}
             </Card>
         );
     } else {
