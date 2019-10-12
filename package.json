@@ -30,7 +30,7 @@
     "deploy": "firebase deploy",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --browser",
+    "test": "react-scripts test --git aenv=jsdom --browser",
     "eject": "react-scripts eject"
   },
   "repository": {
